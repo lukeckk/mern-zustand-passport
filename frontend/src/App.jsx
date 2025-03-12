@@ -1,4 +1,4 @@
-import ProductCard from './components/ProductCard'
+import Home from './pages/Home'
 import './App.css'
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
   return (
     <div>
       Hello World
-      <ProductCard />
+      <Home />
     </div>
   )
 }
