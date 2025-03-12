@@ -1,4 +1,4 @@
-// import { useState } from 'react'
+import ProductCard from './components/ProductCard'
 import './App.css'
 
 function App() {
@@ -7,6 +7,7 @@ function App() {
   return (
     <div>
       Hello World
+      <ProductCard />
     </div>
   )
 }

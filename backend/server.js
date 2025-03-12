@@ -1,8 +1,13 @@
 import express from 'express';
 import productRoutes from './../backend/routes/productRouter.js'
+import cors from 'cors';
 
 const app = express()
 const PORT = 5100
+
+app.use(cors({
+  origin: "*"
+}));
 
 // Middleware to parse JSON bodies for POST request
 app.use(express.json());
