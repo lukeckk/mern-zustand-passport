@@ -1,10 +1,16 @@
-import products from './../dummyData/products.js'
+// import products from './../dummyData/products.js'  // dummy data
+import Product from './../models/productModel.js'  // datbase
 
-export const getAllProducts = (req, res) => {
-  res.status(200).json({
-    message: "This is all products",
-    data: products
-  })
+export const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find(); // Fetch all products from the database
+    res.status(200).json({
+      message: 'Showing all products',
+      data: products
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching products', error: error.message });
+  }
 }
 
 export const getProductById = (req, res) => {
