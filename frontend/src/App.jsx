@@ -19,6 +19,11 @@ function App() {
     }
   };
 
+  /* to prevent infinitely GET loop as Component renders → fetchProducts() runs
+  setProducts() updates state
+  State update causes component to re-render
+  Component renders again → fetchProducts() runs again
+  ...and the cycle continues indefinitely */
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -27,6 +32,7 @@ function App() {
     fetchProducts();
   };
 
+  // Have conditional here inside  div and see if loggedin as admin, render AddProduct, else only Home ????
   return (
     <div>
       <h1>Hello World</h1>
