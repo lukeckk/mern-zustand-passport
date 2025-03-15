@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Wireless Headphones",
+    "category": "Electronics",
+    "price": 99.99,
+    "description": "High-quality sound with noise cancellation.",
+    "features": [
+      "Bluetooth 5.0",
+      "20-hour battery life",
+      "Lightweight design"
+    ],
+    "image": "/images/headphones.jpg"
+  },
+  {
+    "name": "Smart Thermostat",
+    "category": "Home Automation",
+    "price": 149.99,
+    "description": "Energy-efficient smart thermostat with app control.",
+    "features": [
+      "Wi-Fi enabled",
+      "Auto temperature adjustment",
+      "Voice control compatible"
+    ],
+    "image": "/images/thermostat.jpg"
+  },
+  {
+    "name": "Ergonomic Office Chair",
+    "category": "Furniture",
+    "price": 229.99,
+    "description": "Adjustable ergonomic chair with lumbar support.",
+    "features": [
+      "Mesh back",
+      "Adjustable armrests",
+      "360-degree swivel"
+    ],
+    "image": "/images/office-chair.jpg"
+  },
+  {
+    "name": "Mechanical Gaming Keyboard",
+    "category": "Gaming Accessories",
+    "price": 129.99,
+    "description": "RGB mechanical keyboard with customizable macros.",
+    "features": [
+      "Cherry MX switches",
+      "Per-key RGB lighting",
+      "Programmable keys"
+    ],
+    "image": "/images/keyboard.jpg"
+  },
+  {
+    "name": "Portable Espresso Maker",
+    "category": "Kitchen Appliances",
+    "price": 59.99,
+    "description": "Compact and manual espresso machine for on-the-go coffee lovers.",
+    "features": [
+      "Hand-powered",
+      "No electricity needed",
+      "Lightweight"
+    ],
+    "image": "/images/espresso-maker.jpg"
+  }
+]
