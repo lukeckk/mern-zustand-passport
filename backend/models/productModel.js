@@ -9,5 +9,6 @@ const productSchema = new mongoose.Schema({
   image: { type: String }
 });
 
+// below triggers the creation of 'products' table
 const Product = mongoose.model('Product', productSchema);
 export default Product;
