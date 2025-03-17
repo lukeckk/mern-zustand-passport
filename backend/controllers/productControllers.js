@@ -1,6 +1,5 @@
 // import products from './../dummyData/products.js'  // dummy data
 import Product from './../models/productModel.js'  // database
-import mongoose from 'mongoose';
 
 
 export const getAllProducts = async (req, res) => {

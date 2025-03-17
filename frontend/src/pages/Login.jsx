@@ -5,10 +5,10 @@ export default function Login() {
 
   return (
     <div>
-      <h1>Login Page</h1>
+      <h1>Log In Page</h1>
       <form onSubmit={submitLogin}>
-        <label>Username</label>
-        <input type="text" name="username" required />
+        <label>Email</label>
+        <input type="text" name="email" required />
 
         <label>Password</label>
         <input type="password" name="password" required />

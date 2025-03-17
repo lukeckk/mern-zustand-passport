@@ -1,5 +1,6 @@
 import express from 'express';
 import productRoutes from './../backend/routes/productRouter.js'
+import userRoutes from './../backend/routes/userRouter.js'
 import cors from 'cors';
 import connectDB from './db.js';
 import dotenv from 'dotenv'
@@ -11,6 +12,12 @@ const PORT = process.env.PORT || 5100;
 
 // Connect to MongoDB
 connectDB()
+
+// Check for required environment variables for auth
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL ERROR: JWT_SECRET is not defined.');
+  process.exit(1); // Exit with failure
+}
 
 app.use(cors({
   origin: "*"
@@ -24,5 +31,6 @@ app.get('/', (req, res) => {
 })
 
 app.use('/products', productRoutes)
+app.use('/users', userRoutes)
 
 app.listen(PORT, () => console.log(`Server started on PORT ${PORT}`))

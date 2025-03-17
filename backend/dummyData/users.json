@@ -1,0 +1,20 @@
+[
+  {
+    "username": "Admin",
+    "email": "admin@email.com",
+    "password": "$2b$12$4Dtcn2VRd7buWgKkxMsa5eecE/IwbwHPkYxguM3Vjvu9A5usbkiL2",
+    "isAdmin": true
+  },
+  {
+    "username": "User",
+    "email": "user@email.com",
+    "password": "$2b$12$5MDpRrMhUC3x8rNINPlYYefY54GHbZq.f43srXnVvkiYK0MDlcRfi",
+    "isAdmin": false
+  },
+  {
+    "username": "User1",
+    "email": "user1@email.com",
+    "password": "$2b$12$WIIxuWHizetSA5LwmdkmJeXr1PMSBT3ybDgyEHjaW9dQWmZ9BhaMa",
+    "isAdmin": false
+  }
+]

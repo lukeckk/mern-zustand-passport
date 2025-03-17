@@ -1,5 +1,7 @@
 import Home from "./pages/Home";
 import AddProduct from "./components/AddProduct";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import "./App.css";
 import { useState, useEffect } from "react";
 
@@ -19,11 +21,6 @@ function App() {
     }
   };
 
-  /* to prevent infinitely GET loop as Component renders → fetchProducts() runs
-  setProducts() updates state
-  State update causes component to re-render
-  Component renders again → fetchProducts() runs again
-  ...and the cycle continues indefinitely */
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -36,8 +33,9 @@ function App() {
   return (
     <div>
       <h1>Hello World</h1>
-      <AddProduct onProductAdded={onProductAdded} />
-      <Home products={products} />
+      {/* <AddProduct onProductAdded={onProductAdded} />
+      <Home products={products} /> */}
+      <Signup />
     </div>
   );
 }
