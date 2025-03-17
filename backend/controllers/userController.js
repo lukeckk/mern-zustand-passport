@@ -49,7 +49,8 @@ const signup = async (req, res) => {
       user: {
         id: savedUser._id,
         username: savedUser.username,
-        email: savedUser.email
+        email: savedUser.email,
+        isAdmin: savedUser.isAdmin
       }
     });
 
@@ -99,7 +100,8 @@ const login = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        isAdmin: user.isAdmin
       }
     });
 
@@ -142,9 +144,27 @@ const logout = (req, res) => {
   res.json({ message: 'Logged out successfully' });
 };
 
+const getProfile = async (req, res) => {
+  try {
+    // req.user is populated by the authenticate middleware
+    res.json({
+      user: {
+        id: req.user._id,
+        username: req.user.username,
+        email: req.user.email,
+        isAdmin: req.user.isAdmin
+      }
+    });
+  } catch (error) {
+    console.error('Profile error:', error);
+    res.status(500).json({ message: 'Error fetching profile' });
+  }
+};
+
 export {
   signup,
   login,
   updatePassword,
-  logout
+  logout,
+  getProfile
 };

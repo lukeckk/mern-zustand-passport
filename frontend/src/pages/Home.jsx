@@ -1,13 +1,8 @@
-import ProductCard from "../components/ProductCard";
-
-export default function Home({ products }) {
+export default function Home() {
   return (
-    <div className="product-card-container">
-      {products.length > 0 ? (
-        products.map((product) => <ProductCard key={product._id} product={product} />)
-      ) : (
-        <p>No products available</p>
-      )}
+    <div>
+      <h1>Home Page</h1>
     </div>
-  );
+  )
 }
+
