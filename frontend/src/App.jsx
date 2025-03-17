@@ -1,3 +1,4 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from "./pages/Home";
 import AddProduct from "./components/AddProduct";
 import Login from "./pages/Login";
@@ -29,14 +30,20 @@ function App() {
     fetchProducts();
   };
 
-  // Have conditional here inside  div and see if loggedin as admin, render AddProduct, else only Home ????
   return (
-    <div>
-      <h1>Hello World</h1>
-      {/* <AddProduct onProductAdded={onProductAdded} />
-      <Home products={products} /> */}
-      <Signup />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={
+          <div>
+            <h1>Hello World</h1>
+            <AddProduct onProductAdded={onProductAdded} />
+            <Home products={products} />
+          </div>
+        } />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

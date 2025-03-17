@@ -2,6 +2,7 @@ import express from 'express';
 import productRoutes from './../backend/routes/productRouter.js'
 import userRoutes from './../backend/routes/userRouter.js'
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import connectDB from './db.js';
 import dotenv from 'dotenv'
 
@@ -13,15 +14,14 @@ const PORT = process.env.PORT || 5100;
 // Connect to MongoDB
 connectDB()
 
-// Check for required environment variables for auth
-if (!process.env.JWT_SECRET) {
-  console.error('FATAL ERROR: JWT_SECRET is not defined.');
-  process.exit(1); // Exit with failure
-}
-
+// Updated CORS configuration from * to below to allow credentials: 'include'
 app.use(cors({
-  origin: "*"
+  origin: "http://localhost:5173", // Your frontend URL
+  credentials: true // Allow credentials (cookies)
 }));
+
+// Cookie parser middleware to allow credentials: 'include'
+app.use(cookieParser());
 
 // Middleware to parse JSON bodies for POST request
 app.use(express.json());
