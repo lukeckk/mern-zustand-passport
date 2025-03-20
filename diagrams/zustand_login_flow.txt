@@ -1,0 +1,64 @@
++------------------+      +------------------+      +------------------+      +------------------+
+| User Interface   |      | React Components |      | Zustand Store    |      | Backend Server   |
++------------------+      +------------------+      +------------------+      +------------------+
+        |                         |                         |                         |
+        | 1. Enter username,      |                         |                         |
+        |    and password         |                         |                         |
+        |------------------------>|                         |                         |
+        |                         |                         |                         |
+        |                    2. Store inputs in             |                         |
+        |                       local state                 |                         |
+        |                       (Login.jsx)                 |                         |
+        |                         |                         |                         |
+        | 3. Click "Log In"       |                         |                         |
+        |------------------------>|                         |                         |
+        |                         | 4. Call store.login()   |                         |
+        |                         |------------------------>|                         |
+        |                         |                         |                         |
+        |                         |                     5. Set isLoading:true         |
+        |                         |                         |                         |
+        |                         |<------------------------|                         |
+        |                         |                         | 6. Submit POST request  |
+        |                         |                         |    to /users/login      |
+        |                         |                         |------------------------>|
+        |                         |                         |                         |
+        |                         |                         |                     7. Find user by username
+        |                         |                         |                         |
+        |                         |                         |                     8. Compare password
+        |                         |                         |                        using bcrypt
+        |                         |                         |                         |
+        |                         |                         |                     9. If valid, generate JWT
+        |                         |                         |                        with user ID & username
+        |                         |                         |                         |
+        |                         |                         |                    10. Set JWT in HTTP-only
+        |                         |                         |                        cookie (maxAge: 1 day)
+        |                         |                         |                         |
+        |                         |                         | 11. Response with user |
+        |                         |                         |     data (no password) |
+        |                         |                         |<------------------------|
+        |                         |                         |                         |
+        |                         |                     12. Set in store:            |
+        |                         |                         user: userData           |
+        |                         |                         isLoading: false         |
+        |                         |                         |                         |
+        |                         |                     13. Persist to localStorage  |
+        |                         |                         |                         |
+        |                         |<------------------------|                         |
+        |                         |                         |                         |
+        |                    14. Observe store change       |                         |
+        |                        for success                |                         |
+        |                         |                         |                         |
+        |                    15. Redirect to               |                         |
+        |                        home page                  |                         |
+        |                         |                         |                         |
++------------------+      +------------------+      +------------------+      +------------------+
+| User Interface   |      | React Components |      | Zustand Store    |      | Backend Server   |
++------------------+      +------------------+      +------------------+      +------------------+
+
+BENEFITS OF ZUSTAND LOGIN FLOW:
+1. User state is centralized in the Zustand store, not scattered across components
+2. Login logic is abstracted into the store, making Login component simpler
+3. User state persists via localStorage even when page refreshes
+4. Any component can access current user state without props drilling
+5. Loading states are managed consistently in the store
+6. JWT remains securely stored only in HTTP-only cookie 

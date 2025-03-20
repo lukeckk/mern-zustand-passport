@@ -1,0 +1,63 @@
++------------------+      +------------------+      +------------------+      +------------------+
+| User Interface   |      | React Components |      | Zustand Store    |      | Backend Server   |
++------------------+      +------------------+      +------------------+      +------------------+
+        |                         |                         |                         |
+        | 1. Enter username,      |                         |                         |
+        |    email, password      |                         |                         |
+        |------------------------>|                         |                         |
+        |                         |                         |                         |
+        |                    2. Store inputs in             |                         |
+        |                       local state                 |                         |
+        |                         |                         |                         |
+        | 3. Click "Sign Up"      |                         |                         |
+        |------------------------>|                         |                         |
+        |                         | 4. Call store.signup()  |                         |
+        |                         |------------------------>|                         |
+        |                         |                         |                         |
+        |                         |                     5. Set isLoading:true         |
+        |                         |                         |                         |
+        |                         |<------------------------|                         |
+        |                         |                         | 6. Submit POST request  |
+        |                         |                         |------------------------>|
+        |                         |                         |                         |
+        |                         |                         |                     7. Validate input
+        |                         |                         |                         |
+        |                         |                         |                     8. Check if user exists
+        |                         |                         |                         |
+        |                         |                         |                     9. Hash password
+        |                         |                         |                       (bcrypt)
+        |                         |                         |                         |
+        |                         |                         |                    10. Save to MongoDB
+        |                         |                         |                         |
+        |                         |                         |                    11. Generate JWT
+        |                         |                         |                         |
+        |                         |                         |                    12. Set HTTP-only
+        |                         |                         |                        cookie
+        |                         |                         |                         |
+        |                         |                         | 13. Response with user |
+        |                         |                         |<------------------------|
+        |                         |                         |                         |
+        |                         |                     14. Set state:               |
+        |                         |                         isLoading: false         |
+        |                         |                         success: true            |
+        |                         |                         |                         |
+        |                         |<------------------------|                         |
+        |                         |                         |                         |
+        |                    15. Show success               |                         |
+        |                        message                    |                         |
+        |                         |                         |                         |
+        |                    16. Redirect to               |                         |
+        |                        login page                 |                         |
+        |                         |                         |                         |
++------------------+      +------------------+      +------------------+      +------------------+
+| User Interface   |      | React Components |      | Zustand Store    |      | Backend Server   |
++------------------+      +------------------+      +------------------+      +------------------+
+
+ADVANTAGES OF ZUSTAND APPROACH:
+1. Centralized state management - auth logic is in one place
+2. Components are cleaner, focusing only on UI rendering 
+3. State persists across page refreshes with persist middleware
+4. Consistent loading/error states for better UX
+5. Auth functions are easily reusable across components
+6. Better separation of concerns (data fetching vs rendering)
+7. Possibility to add global auth listeners

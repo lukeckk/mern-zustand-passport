@@ -25,7 +25,8 @@ const signup = async (req, res) => {
       password
     });
 
-    // Save user (password will be hashed by pre-save middleware)
+    // Save new user in the database as savedUder
+    // (password will be hashed by pre-save middleware)
     const savedUser = await newUser.save();
 
     // Generate JWT token that lasts for 1 day

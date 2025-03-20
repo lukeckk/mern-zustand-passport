@@ -1,0 +1,115 @@
++--------------------+    +--------------------+    +--------------------+    +--------------------+
+| User Closes App    |    | User Returns       |    | Current App.jsx    |    | Backend Server     |
++--------------------+    +--------------------+    +--------------------+    +--------------------+
+         |                         |                         |                         |
+         | 1. User logs in         |                         |                         |
+         | successfully            |                         |                         |
+         |                         |                         |                         |
+         | 2. JWT stored as        |                         |                         |
+         | HTTP-only cookie        |                         |                         |
+         | (valid for 24 hours)    |                         |                         |
+         |                         |                         |                         |
+         | 3. User browses the app |                         |                         |
+         |                         |                         |                         |
+         | 4. User closes tab/     |                         |                         |
+         | browser or navigates    |                         |                         |
+         | to a different site     |                         |                         |
+         |                         |                         |                         |
+         |------------------------>|                         |                         |
+         |                         | 5. Some time passes     |                         |
+         |                         | (within 24 hours)       |                         |
+         |                         |                         |                         |
+         |                         | 6. User returns to app  |                         |
+         |                         |------------------------>|                         |
+         |                         |                         |                         |
+         |                         |                         | 7. App mounts,          |
+         |                         |                         | no user state yet       |
+         |                         |                         |                         |
+         |                         |                         | 8. useEffect runs       |
+         |                         |                         | checkAuthStatus()       |
+         |                         |                         |------------------------>|
+         |                         |                         |                         |
+         |                         |                         |                         | 9. Server checks 
+         |                         |                         |                         | for token cookie
+         |                         |                         |                         |
+         |                         |                         |                         | 10. Verifies JWT is
+         |                         |                         |                         | valid and not expired
+         |                         |                         |                         |
+         |                         |                         |                         | 11. Gets user data
+         |                         |                         |                         | from database
+         |                         |                         |                         |
+         |                         |                         | 12. Returns user data   |
+         |                         |                         |<------------------------|
+         |                         |                         |                         |
+         |                         |                         | 13. Sets user state     |
+         |                         |                         | with returned data      |
+         |                         |                         |                         |
+         |                         |                         | 14. Renders app with    |
+         |                         |                         | authenticated user      |
+         |                         |                         |                         |
+         |                         | 15. User sees their     |                         |
+         |                         | authenticated session   |                         |
+         |                         | without needing to      |                         |
+         |                         | log in again            |                         |
+         |                         |                         |                         |
++--------------------+    +--------------------+    +--------------------+    +--------------------+
+
+WITH ZUSTAND PERSISTENCE ENHANCEMENT:
+------------------------------------
+
++--------------------+    +--------------------+    +--------------------+    +--------------------+
+| User Closes App    |    | User Returns       |    | Zustand App.jsx    |    | Backend Server     |
++--------------------+    +--------------------+    +--------------------+    +--------------------+
+         |                         |                         |                         |
+         | 1. User logs in         |                         |                         |
+         | successfully            |                         |                         |
+         |                         |                         |                         |
+         | 2. JWT stored as        |                         |                         |
+         | HTTP-only cookie        |                         |                         |
+         |                         |                         |                         |
+         | 3. User state stored    |                         |                         |
+         | in localStorage via     |                         |                         |
+         | Zustand persist         |                         |                         |
+         |                         |                         |                         |
+         | 4. User closes tab/     |                         |                         |
+         | browser or navigates    |                         |                         |
+         | to a different site     |                         |                         |
+         |                         |                         |                         |
+         |------------------------>|                         |                         |
+         |                         | 5. Some time passes     |                         |
+         |                         |                         |                         |
+         |                         | 6. User returns to app  |                         |
+         |                         |------------------------>|                         |
+         |                         |                         |                         |
+         |                         |                         | 7. App mounts,          |
+         |                         |                         | Zustand IMMEDIATELY     |
+         |                         |                         | hydrates user state     |
+         |                         |                         | from localStorage       |
+         |                         |                         |                         |
+         |                         |                         | 8. UI renders with user |
+         |                         |                         | data immediately        |
+         |                         |                         |                         |
+         |                         | 9. User instantly sees  |                         |
+         |                         | authenticated UI        |                         |
+         |                         |                         |                         |
+         |                         |                         | 10. In background,      |
+         |                         |                         | checkAuthStatus() runs  |
+         |                         |                         |------------------------>|
+         |                         |                         |                         |
+         |                         |                         |                         | 11. Server validates
+         |                         |                         |                         | JWT cookie
+         |                         |                         |                         |
+         |                         |                         | 12. Confirms auth state |
+         |                         |                         |<------------------------|
+         |                         |                         |                         |
+         |                         |                         | 13. Updates store if    |
+         |                         |                         | needed (rarely needed   |
+         |                         |                         | as both should match)   |
+         |                         |                         |                         |
++--------------------+    +--------------------+    +--------------------+    +--------------------+
+
+BENEFITS OF ZUSTAND PERSISTENCE:
+1. Instant UI rendering with authenticated state (no loading flickers)
+2. Double-verification: localStorage for immediate UI + cookie check for security
+3. Better offline capabilities if needed in the future
+4. Smoother user experience with fewer visible state transitions 

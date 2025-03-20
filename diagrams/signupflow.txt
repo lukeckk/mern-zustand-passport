@@ -1,0 +1,48 @@
++------------------+           +------------------+          +------------------+
+| User Interface   |           | React Components |          | Backend Server   |
++------------------+           +------------------+          +------------------+
+        |                              |                             |
+        | 1. Enter username,           |                             |
+        |    email, password           |                             |
+        |----------------------------->|                             |
+        |                              |                             |
+        |                        2. Store inputs in                  |
+        |                           local state                      |
+        |                              |                             |
+        | 3. Click "Sign Up"           |                             |
+        |----------------------------->|                             |
+        |                              | 4. Submit form              |
+        |                              |       POST request          |
+        |                              |        JSON data            |
+        |                              |---------------------------->|
+        |                              |                             |
+        |                              |                         5. Validate input
+        |                              |                             |
+        |                              |                         6. Check if user exists
+        |                              |                             |
+        |                              |                         7. Hash password
+        |                              |                           (bcrypt)
+        |                              |                             |
+        |                              |                         8. Save to MongoDB
+        |                              |                             |
+        |                              |                         9. Generate JWT
+        |                              |                             |
+        |                              |                        10. Set HTTP-only
+        |                              |                            cookie
+        |                              |                             |
+        |                              | 11. Response with user data |
+        |                              |<----------------------------|
+        |                              |                             |
+        |                        12. Show success                    |
+        |                            message                         |
+        |                              |                             |
+        |                        13. Redirect to                     |
+        |                            login page                      |
+        |                              |                             |
+        |                              |                             |
++------------------+           +------------------+          +------------------+
+| User Interface   |           | React Components |          | Backend Server   |
++------------------+           +------------------+          +------------------+
+
+NOTE: In current flow, the user needs to log in separately after signup.
+Local component state (useState) is used to manage form data and UI states.

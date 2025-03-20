@@ -1,0 +1,50 @@
++------------------+           +------------------+          +------------------+
+| User Interface   |           | React Components |          | Backend Server   |
++------------------+           +------------------+          +------------------+
+        |                              |                             |
+        | 1. Enter username            |                             |
+        |    and password              |                             |
+        |----------------------------->|                             |
+        |                              |                             |
+        |                        2. Store inputs in                  |
+        |                           component state                  |
+        |                           (Login.jsx)                      |
+        |                              |                             |
+        | 3. Click "Log In"            |                             |
+        |----------------------------->|                             |
+        |                              | 4. Submit form              |
+        |                              |       POST request          |
+        |                              |       to /users/login       |
+        |                              |       with credentials      |
+        |                              |---------------------------->|
+        |                              |                             |
+        |                              |                         5. Find user by username
+        |                              |                             |
+        |                              |                         6. Compare password
+        |                              |                            using bcrypt
+        |                              |                             |
+        |                              |                         7. If valid, generate JWT
+        |                              |                            with user ID & username
+        |                              |                             |
+        |                              |                         8. Set JWT in HTTP-only
+        |                              |                            cookie (maxAge: 1 day)
+        |                              |                             |
+        |                              | 9. Response with user data  |
+        |                              |    (excludes password)      |
+        |                              |<----------------------------|
+        |                              |                             |
+        |                        10. Call setUser()                  |
+        |                            passed from App.jsx             |
+        |                            via props                       |
+        |                              |                             |
+        |                        11. Redirect to                     |
+        |                             home page                      |
+        |                              |                             |
+        |                              |                             |
++------------------+           +------------------+          +------------------+
+| User Interface   |           | React Components |          | Backend Server   |
++------------------+           +------------------+          +------------------+
+
+NOTE: In current flow, the App.jsx component has the user state and passes 
+setUser to Login component as a prop. The state is lost on page refresh,
+requiring another call to /users/profile to restore the session. 
