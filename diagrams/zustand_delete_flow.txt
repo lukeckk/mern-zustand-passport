@@ -1,0 +1,177 @@
++------------------+      +------------------+      +------------------+      +------------------+
+| Rendering Flow   |      | User Interaction |      | Zustand Store    |      | Backend Process  |
++------------------+      +------------------+      +------------------+      +------------------+
+         |                         |                         |                         |
+         |                         |                         |                         |
+ 1. Component access               |                         |                         |
+ useAuthStore to get               |                         |                         |
+ user state                        |                         |                         |
+         |                         |                         |                         |
+         |                         |                         |                         |
+ 2. Component access               |                         |                         |
+ useProductStore to get            |                         |                         |
+ products & actions                |                         |                         |
+         |                         |                         |                         |
+         |                         |                         |                         |
+ 3. ProductCard renders            |                         |                         |
+ based on state:                   |                         |                         |
+ if (user?.isAdmin)                |                         |                         |
+         |                         |                         |                         |
+         |                         |                         |                         |
+ 4. If admin, render Delete        |                         |                         |
+ button, else hide it              |                         |                         |
+         |                         |                         |                         |
+         |                         |                         |                         |
+         |------------------------->                         |                         |
+         |                         |                         |                         |
+         |                    5. Admin user sees             |                         |
+         |                    delete button and              |                         |
+         |                    clicks it                      |                         |
+         |                         |                         |                         |
+         |                         |------------------------>|                         |
+         |                         |                         |                         |
+         |                         |                    6. Directly calls             |
+         |                         |                    store.deleteProduct(id)       |
+         |                         |                         |                         |
+         |                         |                    7. Store sets                  |
+         |                         |                    isLoading: true                |
+         |                         |                         |                         |
+         |                         |<------------------------|                         |
+         |                         |                         |                         |
+         |                    8. UI shows loading             |                         |
+         |                    indicator (optional)           |                         |
+         |                         |                         |                         |
+         |                         |                    9. Store shows                 |
+         |                         |                    confirmation dialog            |
+         |                         |                         |                         |
+         |                         |<------------------------|                         |
+         |                         |                         |                         |
+         |                    10. User confirms              |                         |
+         |                    deletion (clicks OK)           |                         |
+         |                         |                         |                         |
+         |                         |------------------------>|                         |
+         |                         |                         |                         |
+         |                         |                    11. Store optimistically      |
+         |                         |                    removes product from state    |
+         |                         |                         |                         |
+         |                         |                    12. Makes DELETE API           |
+         |                         |                    request to backend             |
+         |                         |                         |------------------------>|
+         |                         |                         |                         |
+         |                         |                         |                    13. Request arrives with 
+         |                         |                         |                    JWT in cookie header
+         |                         |                         |                         |
+         |                         |                         |                    14. authenticate
+         |                         |                         |                    middleware runs
+         |                         |                         |                         |
+         |                         |                         |                    15. isAdmin
+         |                         |                         |                    middleware runs
+         |                         |                         |                         |
+         |                         |                         |                    16. deleteProductById
+         |                         |                         |                    controller runs
+         |                         |                         |                         |
+         |                         |                         |<------------------------|
+         |                         |                         |                         |
+         |                         |                    17. Store processes response   |
+         |                         |                    and updates state:            |
+         |                         |                    - isLoading: false            |
+         |                         |                    - error: null/message         |
+         |                         |                         |                         |
+         |<------------------------------------------------------------------------------------------|
+         |                         |                         |                         |
+ 18. All subscribed               |                         |                         |
+ components automatically         |                         |                         |
+ update to reflect                |                         |                         |
+ product removal                  |                         |                         |
+         |                         |                         |                         |
++------------------+      +------------------+      +------------------+      +------------------+
+| Rendering Flow   |      | User Interaction |      | Zustand Store    |      | Backend Process  |
++------------------+      +------------------+      +------------------+      +------------------+
+
+
+ZUSTAND PRODUCT STORE IMPLEMENTATION FOR DELETE
+--------------------------------------------
+
+```javascript
+// stores/productStore.js
+import { create } from 'zustand';
+
+const useProductStore = create((set, get) => ({
+  products: [],
+  isLoading: false,
+  error: null,
+  
+  // Fetch all products
+  fetchProducts: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch("http://localhost:5100/products");
+      if (!response.ok) throw new Error("Error fetching data");
+      const data = await response.json();
+      set({ products: data.data, isLoading: false });
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+    }
+  },
+  
+  // Delete a product
+  deleteProduct: async (productId) => {
+    // Confirmation dialog
+    const confirmed = window.confirm('Are you sure you want to delete this product?');
+    if (!confirmed) return;
+    
+    // Optimistic update (remove product from state immediately)
+    const currentProducts = get().products;
+    set({ 
+      isLoading: true,
+      products: currentProducts.filter(p => p._id !== productId)
+    });
+    
+    try {
+      const response = await fetch(`http://localhost:5100/products/${productId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        // If deletion fails, restore the product in the state
+        set({ 
+          products: currentProducts,
+          error: 'Failed to delete product',
+          isLoading: false
+        });
+        throw new Error('Failed to delete product');
+      }
+      
+      // Success - product already removed from state
+      set({ isLoading: false });
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      // State has already been restored above if needed
+    }
+  }
+}));
+```
+
+ADVANTAGES OF ZUSTAND APPROACH FOR DELETE FUNCTIONALITY
+-----------------------------------------------------
+
+1. CENTRALIZED LOGIC:
+   - Delete functionality lives in the store, not scattered across components
+   - Single source of truth for product state
+
+2. OPTIMISTIC UPDATES:
+   - UI updates immediately without waiting for backend response
+   - Better user experience with perceived faster performance
+
+3. ERROR HANDLING:
+   - Centralized error handling in the store
+   - Ability to restore state if deletion fails
+
+4. SIMPLIFIED COMPONENTS:
+   - ProductCard simply connects to store and calls actions
+   - No need to pass callbacks through props
+
+5. AUTOMATIC UI UPDATES:
+   - All components subscribing to the product state update automatically
+   - No need for manual state filtering in components 

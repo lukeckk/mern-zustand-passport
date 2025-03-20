@@ -107,3 +107,8 @@
 .auth-links a:hover {
   text-decoration: underline;
 }
+
+
+.delete-button:hover {
+  background-color: #c82333;
+}

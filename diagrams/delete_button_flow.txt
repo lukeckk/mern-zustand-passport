@@ -1,0 +1,140 @@
++------------------+      +------------------+      +------------------+      +------------------+
+| Rendering Flow   |      | User Interaction |      | Frontend Logic   |      | Backend Process  |
++------------------+      +------------------+      +------------------+      +------------------+
+         |                         |                         |                         |
+         |                         |                         |                         |
+ 1. App renders Main               |                         |                         |
+ component with user prop          |                         |                         |
+         |                         |                         |                         |
+         |                         |                         |                         |
+ 2. Main renders ProductCard       |                         |                         |
+ with user and callback            |                         |                         |
+         |                         |                         |                         |
+         |                         |                         |                         |
+ 3. ProductCard checks             |                         |                         |
+ if (user && user.isAdmin)         |                         |                         |
+         |                         |                         |                         |
+         |                         |                         |                         |
+ 4. If admin, render Delete        |                         |                         |
+ button, else hide it              |                         |                         |
+         |                         |                         |                         |
+         |                         |                         |                         |
+         |------------------------->                         |                         |
+         |                         |                         |                         |
+         |                    5. Admin user sees             |                         |
+         |                    delete button and              |                         |
+         |                    clicks it                      |                         |
+         |                         |                         |                         |
+         |                         |------------------------>|                         |
+         |                         |                         |                         |
+         |                         |                    6. DeleteProduct               |
+         |                         |                    component handles              |
+         |                         |                    the click event                |
+         |                         |                         |                         |
+         |                         |                    7. Shows confirmation          |
+         |                         |                    dialog (window.confirm)        |
+         |                         |                         |                         |
+         |                         |<------------------------|                         |
+         |                         |                         |                         |
+         |                    8. User confirms               |                         |
+         |                    deletion (clicks OK)           |                         |
+         |                         |                         |                         |
+         |                         |------------------------>|                         |
+         |                         |                         |                         |
+         |                         |                    9. Makes DELETE API            |
+         |                         |                    request to backend             |
+         |                         |                    with credentials:              |
+         |                         |                    'include' for cookies          |
+         |                         |                         |                         |
+         |                         |                         |------------------------>|
+         |                         |                         |                         |
+         |                         |                         |                    10. Request arrives with 
+         |                         |                         |                    JWT in cookie header
+         |                         |                         |                         |
+         |                         |                         |                    11. authenticate
+         |                         |                         |                    middleware runs:
+         |                         |                         |                    - verifies token
+         |                         |                         |                    - finds user
+         |                         |                         |                    - attaches to req.user
+         |                         |                         |                         |
+         |                         |                         |                    12. isAdmin
+         |                         |                         |                    middleware runs:
+         |                         |                         |                    - checks req.user.isAdmin
+         |                         |                         |                    - continues if true
+         |                         |                         |                    - 403 error if false
+         |                         |                         |                         |
+         |                         |                         |                    13. deleteProductById
+         |                         |                         |                    controller runs:
+         |                         |                         |                    - finds product by ID
+         |                         |                         |                    - deletes from MongoDB
+         |                         |                         |                    - returns success response
+         |                         |                         |                         |
+         |                         |                         |<------------------------|
+         |                         |                         |                         |
+         |                         |                    14. Processes response         |
+         |                         |                    and calls onProductDeleted     |
+         |                         |                    callback with product ID       |
+         |                         |                         |                         |
+         |                         |                         |                         |
+         |                         |                    15. handleProductDeleted at    |
+         |                          |                   Main component                 |
+         |                         |                    filters deleted product        |
+         |                         |                    from local state               |
+         |                         |                         |                         |
+         |                         |                         |                         |
+         |                         |                    16. App component              |
+         |                         |                    calls fetchProducts()          |
+         |                         |                    to refresh the list            |
+         |                         |                         |                         |
+         |                         |                         |                         |
+         |<------------------------------------------------------------|              |
+         |                         |                         |                         |
+ 17. UI updates to show            |                         |                         |
+ products without the              |                         |                         |
+ deleted item                      |                         |                         |
+         |                         |                         |                         |
++------------------+      +------------------+      +------------------+      +------------------+
+| Rendering Flow   |      | User Interaction |      | Frontend Logic   |      | Backend Process  |
++------------------+      +------------------+      +------------------+      +------------------+
+
+
+DATA FLOW WITH STATE MANAGEMENT
+------------------------------
+
++----------------------+     +-------------------------+     +------------------------+
+| Initial Render State |     | After Delete Button Click |     | After Backend Response |
++----------------------+     +-------------------------+     +------------------------+
+| App.jsx:             |     | DeleteProduct.jsx:       |     | Main.jsx:              |
+| - user state         |     | - window.confirm()       |     | - Optimistically       |
+| - products state     |     | - fetch DELETE request   |     |   removes product      |
+|                      |     |                         |     |   from local state      |
+| Main.jsx:            |     |                         |     |                        |
+| - Local products     |     |                         |     | App.jsx:               |
+|   state from props   |     |                         |     | - fetchProducts()      |
+|                      |     |                         |     |   refreshes complete   |
+| ProductCard.jsx:     |     |                         |     |   products list        |
+| - Shows delete       |     |                         |     |                        |
+|   button if admin    |     |                         |     |                        |
++----------------------+     +-------------------------+     +------------------------+
+
+
+SECURITY CONSIDERATIONS FOR DELETE FUNCTIONALITY
+----------------------------------------------
+
+1. FRONTEND SECURITY:
+   - Delete button only rendered if (user && user.isAdmin) is true
+   - Even if button is artificially added to DOM, API requests require auth cookie
+
+2. API SECURITY:
+   - JWT in HTTP-only cookie (not accessible via JavaScript)
+   - DELETE request requires 'credentials: include' to send cookie
+
+3. BACKEND SECURITY:
+   - authenticate middleware verifies valid JWT token
+   - isAdmin middleware ensures user has admin privileges
+   - Both middleware must pass before delete operation executes
+
+4. DATABASE SECURITY:
+   - Product deletion performed using Mongoose's findByIdAndDelete
+   - Operation is atomic and transactional
+   - Only the specific requested product ID is affected 

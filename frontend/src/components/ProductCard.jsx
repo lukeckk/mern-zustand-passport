@@ -1,4 +1,9 @@
-export default function ProductCard({ product }) {
+import DeleteProduct from './DeleteProduct';
+
+export default function ProductCard({ product, user, onProductDeleted }) {
+  // Check if user exists and is an admin
+  const isAdmin = user && user.isAdmin;
+
   return (
     <div className="product-card">
       <h2>{product.name}</h2>
@@ -14,6 +19,16 @@ export default function ProductCard({ product }) {
           <li key={index}>{feature}</li>
         ))}
       </ul>
+
+      {/* Only show delete button for admin users */}
+      {isAdmin && (
+        <div className="admin-actions">
+          <DeleteProduct
+            productId={product._id}
+            onProductDeleted={onProductDeleted}
+          />
+        </div>
+      )}
     </div>
   );
 }

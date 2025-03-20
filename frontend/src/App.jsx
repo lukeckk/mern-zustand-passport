@@ -61,6 +61,11 @@ function App() {
     fetchProducts();
   };
 
+  const onProductDeleted = async () => {
+    // Refresh the products list after a product is deleted
+    fetchProducts();
+  };
+
   const handleLogout = async () => {
     try {
       await fetch("http://localhost:5100/users/logout", {
@@ -104,7 +109,11 @@ function App() {
                 )}
 
                 {/* Main component only for logged in users */}
-                <Main products={products} />
+                <Main
+                  products={products}
+                  user={user}
+                  onProductDeleted={onProductDeleted}
+                />
               </>
             ) : (
               /* Home component for visitors */
