@@ -1,4 +1,5 @@
 import DeleteProduct from './DeleteProduct';
+import AddToCart from './AddToCart';
 
 export default function ProductCard({ product, user, onProductDeleted }) {
   // Check if user exists and is an admin
@@ -21,14 +22,17 @@ export default function ProductCard({ product, user, onProductDeleted }) {
       </ul>
 
       {/* Only show delete button for admin users */}
-      {isAdmin && (
+      {isAdmin ? (
         <div className="admin-actions">
           <DeleteProduct
             productId={product._id}
             onProductDeleted={onProductDeleted}
           />
         </div>
+      ) : (
+        <AddToCart product={product} />
       )}
+
     </div>
   );
 }

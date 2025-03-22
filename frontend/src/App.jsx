@@ -4,14 +4,17 @@ import Home from "./pages/Home";
 import AddProduct from "./components/AddProduct";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Header from './components/header';
 import "./App.css";
 import { useState, useEffect } from "react";
+import useCartStore from './stores/cartStore';
 
 function App() {
   const [products, setProducts] = useState([]);
   const [user, setUser] = useState(null);
+  const clearCart = useCartStore(state => state.clearCart);
 
-  // Check if user is logged in
+  // Set 'user' state with current user
   const checkAuthStatus = async () => {
     try {
       const response = await fetch("http://localhost:5100/users/profile", {
@@ -38,6 +41,7 @@ function App() {
     }
   }, [user]);
 
+  // Set 'products' state
   const fetchProducts = async () => {
     try {
       const response = await fetch("http://localhost:5100/products");
@@ -45,27 +49,29 @@ function App() {
         throw new Error("Error fetching data");
       }
       const data = await response.json();
-      setProducts(data.data);
+      setProducts(data.data);   // set data as 'products' state
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
+  // Check auth status and fetch products when component mounts
   useEffect(() => {
-    // Check auth status and fetch products when component mounts
     checkAuthStatus();
     fetchProducts();
   }, []);
 
+  // Call fetchProducts() and reset 'products' state after adding
   const onProductAdded = async () => {
     fetchProducts();
   };
 
+  // Call fetchProducts() and reset 'products' state after deleting
   const onProductDeleted = async () => {
-    // Refresh the products list after a product is deleted
     fetchProducts();
   };
 
+  // Log out function for 'log out' button
   const handleLogout = async () => {
     try {
       await fetch("http://localhost:5100/users/logout", {
@@ -73,6 +79,7 @@ function App() {
         credentials: "include"
       });
       setUser(null);
+      clearCart(); // Clear cart when user logs out
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -84,7 +91,7 @@ function App() {
         <Route path="/" element={
           <div>
             <div className="header">
-              {/* <h1>Swift Shop</h1> */}
+              <Header user={user} />
               <div>
                 {user ? (
                   <div className="user-info">

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 
-export default function Main({ products: initialProducts, user }) {
+export default function Main({ products: initialProducts, user }) { // rename 'products' to 'initialProducts' to avoid error 
   // Local state to manage products after potential deletions
-  const [products, setProducts] = useState(initialProducts || []);
+  const [products, setProducts] = useState(initialProducts || []); // use [] as default is 'initialProducts' is null or undefined to avoid error
 
-  // Update local products when prop changes such as after deleted
+  // Update local products when prop changes such as after deletion
   useEffect(() => {
     setProducts(initialProducts || []);
   }, [initialProducts]);
