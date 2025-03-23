@@ -1,6 +1,8 @@
 import express from 'express';
 import productRoutes from './../backend/routes/productRouter.js'
 import userRoutes from './../backend/routes/userRouter.js'
+import orderRoutes from './../backend/routes/orderRouter.js'
+import stripeRoutes from './routes/stripeRouter.js'
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './db.js';
@@ -32,5 +34,7 @@ app.get('/', (req, res) => {
 
 app.use('/products', productRoutes)
 app.use('/users', userRoutes)
+app.use('/orders', orderRoutes)
+app.use('/', stripeRoutes) // Stripe routes
 
 app.listen(PORT, () => console.log(`Server started on PORT ${PORT}`))

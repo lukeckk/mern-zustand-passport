@@ -41,6 +41,7 @@ export default function AddProduct({ onProductAdded }) {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(product),
       });
 
@@ -55,7 +56,6 @@ export default function AddProduct({ onProductAdded }) {
 
       // checks newly added data
       console.log('Product added:', data);
-
 
       // Reset the form after submission
       setProduct({

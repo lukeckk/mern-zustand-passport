@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Main from "./pages/Main";
 import Home from "./pages/Home";
 import AddProduct from "./components/AddProduct";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Checkout from "./pages/Checkout";
 import Header from './components/header';
 import "./App.css";
 import { useState, useEffect } from "react";
@@ -12,6 +13,7 @@ import useCartStore from './stores/cartStore';
 function App() {
   const [products, setProducts] = useState([]);
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const clearCart = useCartStore(state => state.clearCart);
 
   // Set 'user' state with current user
@@ -30,6 +32,8 @@ function App() {
     } catch (error) {
       console.error("Error checking auth status:", error);
       setUser(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,52 +89,52 @@ function App() {
     }
   };
 
+  // Show loading state while checking auth
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={
-          <div>
-            <div className="header">
-              <Header user={user} />
+      <div className="app-container">
+        <Header user={user} onLogout={handleLogout} />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={
               <div>
+                {/* Conditional rendering based on whether user is logged in */}
                 {user ? (
-                  <div className="user-info">
-                    <span>Welcome, {user.username}</span>
-                    <button onClick={handleLogout}>Logout</button>
-                  </div>
+                  <>
+                    {/* Only render AddProduct component if user is admin */}
+                    {user.isAdmin && (
+                      <AddProduct onProductAdded={onProductAdded} />
+                    )}
+
+                    {/* Main component only for logged in users */}
+                    <Main
+                      products={products}
+                      user={user}
+                      onProductDeleted={onProductDeleted}
+                    />
+                  </>
                 ) : (
-                  <div className="auth-links">
-                    <a href="/login">Login</a>
-                    <a href="/signup">Signup</a>
-                  </div>
+                  /* Home component for visitors */
+                  <Home />
                 )}
               </div>
-            </div>
-
-            {/* Conditional rendering based on whether user is logged in */}
-            {user ? (
-              <>
-                {/* Only render AddProduct component if user is admin */}
-                {user.isAdmin && (
-                  <AddProduct onProductAdded={onProductAdded} />
-                )}
-
-                {/* Main component only for logged in users */}
-                <Main
-                  products={products}
-                  user={user}
-                  onProductDeleted={onProductDeleted}
-                />
-              </>
-            ) : (
-              /* Home component for visitors */
-              <Home />
-            )}
-          </div>
-        } />
-        <Route path="/login" element={<Login setUser={setUser} />} />
-        <Route path="/signup" element={<Signup />} />
-      </Routes>
+            } />
+            <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/checkout" element={
+              user ? (
+                <Checkout user={user} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            } />
+          </Routes>
+        </main>
+      </div>
     </BrowserRouter>
   );
 }
