@@ -1,0 +1,34 @@
+sequenceDiagram
+    participant User
+    participant AddProduct
+    participant Backend
+    participant CartStore
+    participant App
+    participant Header
+
+    %% Add Product Flow
+    User->>AddProduct: Clicks "Add Product"
+    AddProduct->>Backend: POST /products (with credentials)
+    Backend-->>AddProduct: 201 Created
+    AddProduct->>App: onProductAdded()
+    App->>Backend: GET /products
+    Backend-->>App: Updated products list
+    App->>App: setProducts(newProducts)
+
+    %% Cart State Flow
+    User->>App: Clicks "Add to Cart"
+    App->>CartStore: addToCart(product)
+    CartStore->>CartStore: Update cart state
+    CartStore-->>Header: Update cart count
+    CartStore-->>App: Update cart items
+
+    %% Persist Cart State
+    Note over CartStore: Cart state persists in Zustand store<br/>until user logs out
+
+    %% Logout Flow
+    User->>Header: Clicks "Logout"
+    Header->>App: handleLogout()
+    App->>Backend: POST /users/logout
+    App->>CartStore: clearCart()
+    App->>App: setUser(null)
+    App-->>User: Redirect to login

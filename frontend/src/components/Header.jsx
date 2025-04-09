@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import CartIcon from './CartIcon';
+import "./Header.css"
 
 export default function Header({ user, onLogout }) {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function Header({ user, onLogout }) {
 
   return (
     <header>
-      <h1>Swift Shop</h1>
+      <h1 id='swiftShop'>Swift Shop</h1>
       {user ? (
         <>
           <CartIcon />
@@ -21,8 +22,8 @@ export default function Header({ user, onLogout }) {
         </>
       ) : (
         <>
-          <Link to='/login'>Login</Link>
-          <Link to='/signup'>Signup</Link>
+          {/* <Link to='/login'>Login</Link>
+          <Link to='/signup'>Signup</Link> */}
         </>
       )}
     </header>
