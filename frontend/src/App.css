@@ -52,11 +52,10 @@
 }
 
 .product-card {
-  border: 1px solid #ccc;
+  border: 3px solid #646CFF;
   border-radius: 5px;
   padding: 10px;
   text-align: center;
-  background-color: #1991e0;
   height: 100%;
 }
 
