@@ -5,7 +5,7 @@ import AddProduct from "./components/AddProduct";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Checkout from "./pages/Checkout";
-import Header from './components/header';
+import Header from './components/TheHeader';
 import "./App.css";
 import { useState, useEffect } from "react";
 import useCartStore from './stores/cartStore';

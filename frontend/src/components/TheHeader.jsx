@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import CartIcon from './CartIcon';
-import './header.css';
+import './Header.css';
 
 export default function Header({ user, onLogout }) {
   const navigate = useNavigate();

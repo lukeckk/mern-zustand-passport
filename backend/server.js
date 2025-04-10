@@ -1,7 +1,7 @@
 import express from 'express';
-import productRoutes from './../backend/routes/productRouter.js'
-import userRoutes from './../backend/routes/userRouter.js'
-import orderRoutes from './../backend/routes/orderRouter.js'
+import productRoutes from './routes/productRouter.js'
+import userRoutes from './routes/userRouter.js'
+import orderRoutes from './routes/orderRouter.js'
 import stripeRoutes from './routes/stripeRouter.js'
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -18,7 +18,7 @@ connectDB()
 
 // Updated CORS configuration from * to below to allow credentials: 'include'
 app.use(cors({
-  origin: "http://localhost:5173", // Your frontend URL
+  origin: ["http://localhost:5173", "http://localhost:4173"], // Allow both ports
   credentials: true // Allow credentials (cookies)
 }));
 

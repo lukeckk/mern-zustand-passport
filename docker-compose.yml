@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4173:4173"
+    environment:
+      - VITE_API_URL=http://backend:5100
+    depends_on:
+      - backend
+    networks:
+      - mern-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5100:5100"
+    env_file:
+      - ./backend/.env
+    networks:
+      - mern-network
+
+networks:
+  mern-network:
+    driver: bridge
