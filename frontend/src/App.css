@@ -108,6 +108,10 @@
 }
 
 
+.delete-button {
+  background-color: #4a90e2;
+}
+
 .delete-button:hover {
   background-color: #3a7bc8;
 }

@@ -13,7 +13,7 @@ export default function ProductCard({ product, user, onProductDeleted }) {
       <p>{product.description}</p>
       {/* Only render image if product.image exists */}
       {product.image ? (
-        <img src={product.image} alt={product.name} />
+        <img src={product.image} alt={product.name} width="200" height="200" />
       ) : null}
       <ul>
         {product.features.map((feature, index) => (
