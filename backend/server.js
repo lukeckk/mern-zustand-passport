@@ -18,7 +18,7 @@ connectDB()
 
 // Updated CORS configuration from * to below to allow credentials: 'include'
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:4173"], // Allow both ports
+  origin: ["http://localhost:5173", "http://localhost:4173", "'http://34.133.37.127'"], // Allow both ports
   credentials: true // Allow credentials (cookies)
 }));
 
