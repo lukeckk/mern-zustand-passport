@@ -18,7 +18,7 @@ connectDB()
 
 // Updated CORS configuration from * to below to allow credentials: 'include'
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:4173", "'http://34.133.37.127'"], // Allow both ports
+  origin: ["http://localhost:5173", "http://localhost:4173", "http://34.133.37.127", "http://34.133.37.127:5100", "http://34.42.226.221/"], // Allow both ports
   credentials: true // Allow credentials (cookies)
 }));
 
@@ -37,4 +37,6 @@ app.use('/users', userRoutes)
 app.use('/orders', orderRoutes)
 app.use('/', stripeRoutes) // Stripe routes
 
-app.listen(PORT, () => console.log(`Server started on PORT ${PORT}`))
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server started on PORT ${PORT}`);
+});
