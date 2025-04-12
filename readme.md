@@ -1,4 +1,4 @@
-# MERN E-commerce with Zustand & DevOps Pipeline
+# MERN E-commerce with DevOps Pipeline
 
 A full-stack e-commerce application built with MERN stack (MongoDB, Express.js, React, Node.js) and modern DevOps practices.
 
