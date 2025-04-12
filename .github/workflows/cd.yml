@@ -1,0 +1,61 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+    branches: [ main, master ]
+
+env:
+  GKE_CLUSTER: mern-cluster
+  GKE_ZONE: us-central1
+  GKE_PROJECT: curious-truth-456505-m1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GKE_SA_KEY }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
+      with:
+        project_id: ${{ env.GKE_PROJECT }}
+        install_components: 'gke-gcloud-auth-plugin'
+
+    - name: Get GKE credentials
+      run: |
+        gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} \
+          --zone ${{ env.GKE_ZONE }} \
+          --project ${{ env.GKE_PROJECT }}
+
+    - name: Set up Kustomize
+      run: |
+        curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+        chmod u+x ./kustomize
+
+    - name: Update Kubernetes resources
+      run: |
+        # Update the deployment images
+        ./kustomize edit set image backend=${{ secrets.DOCKER_BACKEND_IMAGE }}:${{ github.sha }}
+        ./kustomize edit set image frontend=${{ secrets.DOCKER_FRONTEND_IMAGE }}:${{ github.sha }}
+        
+    - name: Deploy to GKE
+      run: |
+        ./kustomize build . | kubectl apply -f -
+        kubectl rollout status deployment/mern-backend
+        kubectl rollout status deployment/mern-frontend
+
+    - name: Verify deployment
+      run: |
+        kubectl get services -o wide
+        kubectl get pods -o wide 

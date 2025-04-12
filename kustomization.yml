@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - kubernetes/backend-deployment.yml
+  - kubernetes/backend-service.yml
+  - kubernetes/frontend-deployment.yml
+  - kubernetes/frontend-service.yml
+
+images:
+- name: backend
+  newName: lukeecheng/mern-backend
+  newTag: rebuild
+- name: frontend
+  newName: lukeecheng/mern-frontend
+  newTag: rebuild 
